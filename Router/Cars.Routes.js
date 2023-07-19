@@ -9,7 +9,7 @@ carsRouter.get("/", async (req, res) => {
   const id = decoded.userID;
   try {
     const cars = await CarsModel.find({ userID: id });
-    res.status(200).send({ AllCars: cars });
+    res.status(200).send({ cars });
   } catch (error) {
     res
       .status(200)

@@ -20,36 +20,19 @@ userRouter.post("/signup", async (req, res) => {
   const {  email, password } = req.body;
 
   try {
-    const present = new UserModel.find({email});
-    if(present){
+    
+   
+    bcrypt.hash(password, 5, async (err, hash) => {
+      if (err)
         return res
           .status(400)
-          .send({ message: "User already present", error: err });
-    }
-    else{
-        bcrypt.hash(password, 5, async (err, hash) => {
-            if (err)
-              return res
-                .status(400)
-                .send({ message: "Cannot Register The User", error: err });
-            else {
-              const user = new UserModel({  email, password: hash });
-              await user.save();
-              res.status(200).send({ message: "New User Register" });
-            }
-          });
-    }
-    // bcrypt.hash(password, 5, async (err, hash) => {
-    //   if (err)
-    //     return res
-    //       .status(400)
-    //       .send({ message: "Cannot Register User", error: err });
-    //   else {
-    //     const user = new UserModel({  email, password: hash });
-    //     await user.save();
-    //     res.status(200).send({ message: "New User Register" });
-    //   }
-    // });
+          .send({ message: "Cannot Register User", error: err });
+      else {
+        const user = new UserModel({  email, password: hash });
+        await user.save();
+        res.status(200).send({ message: "New User Register" });
+      }
+    });
   } catch (error) {
     res
       .status(400)
