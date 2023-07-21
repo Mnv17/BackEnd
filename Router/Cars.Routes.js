@@ -4,12 +4,14 @@ const jwt = require("jsonwebtoken");
 const carsRouter = Router();
 
 carsRouter.get("/", async (req, res) => {
-  const token = req.headers.authorization;
-  const decoded = jwt.verify(token, "masai");
-  const id = decoded.userID;
+  // const token = req.headers.authorization;
+  // const decoded = jwt.verify(token, "masai");
+  // const id = decoded.userID;
+  const cars = await CarsModel.find();
+  // console.log(data)
   try {
-    const cars = await CarsModel.find({ userID: id });
-    res.status(200).send({ cars });
+    // const cars = await CarsModel.find({ userID: id });
+    res.status(200).send( {cars} );
   } catch (error) {
     res
       .status(200)
@@ -22,7 +24,7 @@ carsRouter.post("/create", async (req, res) => {
 
   try {
     const cars = new CarsModel(payload);
-    cars.save();
+   await cars.save();
     res.status(200).send({ message: "Car created successfully" });
   } catch (error) {
     res
