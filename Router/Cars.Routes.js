@@ -35,26 +35,58 @@ carsRouter.post("/create", async (req, res) => {
 
 carsRouter.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
-  try {
-    await CarsModel.findByIdAndDelete({ _id: id });
-    res.status(200).send({ message: `Car with id:${id} is Deleted` });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ message: "Cannot Delete Car", error: error.message });
+  const {userID} = req.body;
+  const carData = await CarsModel.findOne({ _id: id });
+  if(carData){
+    try {
+
+      if(userID === carData.userID){
+        await CarsModel.findByIdAndDelete({ _id: id });
+        res.status(200).send({ message: `Car with id:${id} is Deleted` });
+      }
+      else{
+        res
+        .status(400)
+        .send({ message: "You are not Authorized!!", error: error.message });
+      }
+    } catch (error) {
+      res
+        .status(400)
+        .send({ message: "Cannot Delete Car", error: error.message });
+    }
   }
 });
 
 carsRouter.patch("/update/:id", async (req, res) => {
   const { id } = req.params;
-  const payload = req.body;
-  try {
-    await CarsModel.findByIdAndUpdate({ _id: id }, payload);
-    res.status(200).send({ message: `Car with id:${id} is Updated` });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ message: "Cannot Update Car", error: error.message });
+  // const payload = req.body;
+  // try {
+  //   await CarsModel.findByIdAndUpdate({ _id: id }, payload);
+  //   res.status(200).send({ message: `Car with id:${id} is Updated` });
+  // } catch (error) {
+  //   res
+  //     .status(400)
+  //     .send({ message: "Cannot Update Car", error: error.message });
+  // }
+  const {userID} = req.body;
+  const carData = await CarsModel.findOne({ _id: id });
+  if(carData){
+    try {
+
+      if(userID === carData.userID){
+        await CarsModel.findByIdAndUpdate({ _id: id }, req.body);
+        res.status(200).send({ message: `Car with id:${id} is Updated` });
+      }
+      else{
+        res
+        .status(400)
+        .send({ message: "You are not Authorized!!", error: error.message });
+      }
+    } catch (error) {
+      res
+        .status(400)
+        .send({ message: "Cannot Update Car", error: error.message });
+    }
   }
 });
 
